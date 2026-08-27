@@ -48,22 +48,8 @@
 
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1">Alamat Lengkap</label>
-                    <textarea name="address" rows="3" required class="w-full border-slate-300 rounded-lg text-sm focus:ring-red-500 focus:border-red-500 resize-none">{{ old('address', $user->address) }}</textarea>
+                    <textarea name="address" rows="3" required placeholder="Jl. Contoh No. 1, RT 01/RW 02..." class="w-full border-slate-300 rounded-lg text-sm focus:ring-red-500 focus:border-red-500 resize-none">{{ old('address', $user->address) }}</textarea>
                     <x-input-error :messages="$errors->get('address')" class="mt-1" />
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">RT</label>
-                        <x-text-input name="rt" class="w-full" required value="{{ old('rt', $user->rt) }}" placeholder="001" />
-                        <x-input-error :messages="$errors->get('rt')" class="mt-1" />
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">RW</label>
-                        <x-text-input name="rw" class="w-full" required value="{{ old('rw', $user->rw) }}" placeholder="001" />
-                        <x-input-error :messages="$errors->get('rw')" class="mt-1" />
-                    </div>
                 </div>
 
                 <div class="flex items-center gap-3 pt-4 border-t border-slate-100">

@@ -28,8 +28,6 @@ class WargaController extends Controller
             'nik' => ['required', 'string', Rule::unique('users')->ignore($user->id)],
             'phone' => 'required|string|max:20',
             'address' => 'required|string|max:500',
-            'rt' => 'required|string|max:5',
-            'rw' => 'required|string|max:5',
         ], [
             'name.required' => 'Nama wajib diisi.',
             'email.required' => 'Email wajib diisi.',
@@ -39,12 +37,10 @@ class WargaController extends Controller
             'nik.unique' => 'NIK sudah terdaftar.',
             'phone.required' => 'No. telepon wajib diisi.',
             'address.required' => 'Alamat wajib diisi.',
-            'rt.required' => 'RT wajib diisi.',
-            'rw.required' => 'RW wajib diisi.',
         ]);
 
         $user->update($request->only([
-            'name', 'email', 'nik', 'phone', 'address', 'rt', 'rw'
+            'name', 'email', 'nik', 'phone', 'address'
         ]));
 
         return redirect()->route('admin.warga.index')->with('success', 'Data warga berhasil diperbarui.');
