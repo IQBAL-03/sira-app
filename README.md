@@ -56,7 +56,7 @@ Aplikasi ini sepenuhnya responsif dengan:
 
 1. **Clone Repository**
 ```bash
-git clone https://github.com/IQBAL-03/app-sira.git
+git clone https://github.com/IQBAL-03/sira-app.git
 cd sira-app
 ```
 
@@ -287,7 +287,3 @@ Aplikasi ini menggunakan framework Laravel yang berlisensi [MIT license](https:/
 ## Kontak & Support
 
 Jika Anda memiliki pertanyaan atau butuh bantuan, silakan buat issue di repository ini.
-
----
-
-**Dibuat dengan ❤️ menggunakan Laravel & TailwindCSS**
