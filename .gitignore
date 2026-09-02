@@ -24,3 +24,19 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Security - Certificate files
+ca.pem
+*.pem
+*.crt
+*.key
+
+# Database files
+/database/database.sqlite
+*.sqlite
+*.sqlite-journal
+
+# Cache files
+/bootstrap/cache/config.php
+/bootstrap/cache/packages.php
+/bootstrap/cache/services.php
