@@ -30,4 +30,19 @@ class LetterRequestController extends Controller
 
         return back()->with('success', 'Pengajuan surat berhasil dikirim. Mohon tunggu verifikasi admin.');
     }
+
+    public function downloadPdf(LetterRequest $letter)
+    {
+        // Pastikan hanya pemilik surat dan yang berstatus approved yang bisa download
+        if ($letter->user_id !== auth()->id() || $letter->status !== 'approved') {
+            abort(403, 'Akses tidak diizinkan atau surat belum disetujui.');
+        }
+
+        $letter->load('user');
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.surat.pdf', compact('letter'))
+            ->setPaper('a4', 'portrait');
+            
+        $filename = 'surat_pengantar_' . $letter->id . '_' . \Illuminate\Support\Str::slug($letter->user->name ?? 'warga') . '.pdf';
+        return $pdf->download($filename);
+    }
 }

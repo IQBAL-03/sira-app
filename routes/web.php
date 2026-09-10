@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::get('/surat', [AdminLetterController::class, 'index'])->name('surat.index');
     Route::patch('/surat/{letter}/status', [AdminLetterController::class, 'updateStatus'])->name('surat.status');
     Route::get('/surat/{letter}/print', [AdminLetterController::class, 'print'])->name('surat.print');
+    Route::get('/surat/{letter}/pdf', [AdminLetterController::class, 'downloadPdf'])->name('surat.pdf');
 
     Route::get('/pengaduan', [AdminComplaintController::class, 'index'])->name('pengaduan.index');
     Route::patch('/pengaduan/{complaint}/status', [AdminComplaintController::class, 'updateStatus'])->name('pengaduan.status');
@@ -51,6 +52,7 @@ Route::middleware(['auth', 'verified', 'role:warga', 'verified.warga'])->prefix(
 
     Route::get('/surat', [WargaLetterController::class, 'index'])->name('surat.index');
     Route::post('/surat', [WargaLetterController::class, 'store'])->name('surat.store');
+    Route::get('/surat/{letter}/pdf', [WargaLetterController::class, 'downloadPdf'])->name('surat.pdf');
 
     Route::get('/pengaduan', [WargaComplaintController::class, 'index'])->name('pengaduan.index');
     Route::post('/pengaduan', [WargaComplaintController::class, 'store'])->name('pengaduan.store');

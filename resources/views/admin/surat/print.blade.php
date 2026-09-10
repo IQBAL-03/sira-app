@@ -29,10 +29,13 @@
     </style>
 </head>
 <body>
-    <div class="no-print" style="text-align: center; margin-bottom: 20px;">
-        <button onclick="window.print()" style="background: #DC2626; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: Arial, sans-serif;">
+    <div class="no-print" style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 10px;">
+        <button onclick="window.print()" style="background: #DC2626; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: Arial, sans-serif; display: inline-flex; items-center; gap: 6px;">
             🖨️ Cetak Surat
         </button>
+        <a href="{{ route('admin.surat.pdf', $letter) }}" style="background: #1E293B; color: white; text-decoration: none; padding: 10px 24px; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: Arial, sans-serif; display: inline-flex; items-center; gap: 6px;">
+            📥 Unduh PDF
+        </a>
     </div>
 
     <div class="header">

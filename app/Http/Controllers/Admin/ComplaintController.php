@@ -24,58 +24,43 @@ class ComplaintController extends Controller
     public function export()
     {
         $complaints = Complaint::with('user')->latest()->get();
-        
-        $filename = 'laporan_pengaduan_' . date('Y-m-d_His') . '.csv';
-        
-        $headers = [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0',
-        ];
 
-        $callback = function() use ($complaints) {
-            $file = fopen('php://output', 'w');
-            
-            // Add BOM untuk support Unicode di Excel
-            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
-            
-            // Header CSV
-            fputcsv($file, [
-                'No',
-                'Nama Pelapor',
-                'No. Telepon',
-                'Judul Pengaduan',
-                'Deskripsi',
-                'Status',
-                'Tanggal Lapor',
-                'Link Foto'
-            ]);
-
-            // Data
-            $no = 1;
-            foreach ($complaints as $complaint) {
-                fputcsv($file, [
-                    $no++,
-                    $complaint->user->name ?? 'N/A',
-                    $complaint->user->phone ?? '-',
-                    $complaint->title,
-                    $complaint->description,
-                    match($complaint->status) {
-                        'pending' => 'Pending',
-                        'process' => 'Diproses',
-                        'resolved' => 'Selesai',
-                        default => $complaint->status
-                    },
-                    $complaint->created_at->format('d/m/Y H:i'),
-                    $complaint->photo ?? '-'
-                ]);
+        // Siapkan foto dalam format base64 agar aman dan langsung tampil di DomPDF
+        foreach ($complaints as $complaint) {
+            $complaint->photo_base64 = null;
+            if ($complaint->photo) {
+                try {
+                    // Jika path lokal storage
+                    if (str_contains($complaint->photo, '/storage/')) {
+                        $relativePath = str_replace(asset('storage') . '/', '', $complaint->photo);
+                        $fullPath = storage_path('app/public/' . $relativePath);
+                        if (file_exists($fullPath)) {
+                            $type = pathinfo($fullPath, PATHINFO_EXTENSION);
+                            $data = file_get_contents($fullPath);
+                            $complaint->photo_base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                        }
+                    } elseif (filter_var($complaint->photo, FILTER_VALIDATE_URL)) {
+                        // Jika URL eksternal (misal Cloudinary)
+                        $ctx = stream_context_create([
+                            'http' => ['timeout' => 3],
+                            'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]
+                        ]);
+                        $data = @file_get_contents($complaint->photo, false, $ctx);
+                        if ($data !== false) {
+                            $complaint->photo_base64 = 'data:image/jpeg;base64,' . base64_encode($data);
+                        }
+                    }
+                } catch (\Exception $e) {
+                    $complaint->photo_base64 = null;
+                }
             }
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
+        }
+        
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.pengaduan.pdf', compact('complaints'))
+            ->setPaper('a4', 'landscape')
+            ->setOption('isRemoteEnabled', true);
+            
+        $filename = 'laporan_pengaduan_' . date('Y-m-d_His') . '.pdf';
+        return $pdf->download($filename);
     }
 }
